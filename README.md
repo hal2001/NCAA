@@ -20,6 +20,12 @@ GameState - State where the game was played.
 
 TopSeed - The higher seeded team.
 
+TopCity - Hometown of the higher seeded team.
+
+TopST - Home state of the higher seeded team.
+
+TopTravel - Distance traveled by the higher seeded team in km.
+
 TopScore - The score of the higher seeded team in the first round game.
 
 TopGames - Number of games played by the higher seeded team, -9999 indicates a missing value.
@@ -75,6 +81,12 @@ TopDRTG - Defensive rating of the higher seeded team, -9999 indicates a missing 
 TopSOS - Strength of Schedule of the higher seeded team, -9999 indicates a missing value.
 
 BotSeed - The lower seeded team.
+
+BotCity - Hometown of the lower seeded team.
+
+BotST - Home State of the lower seeded team.
+
+BotTravel - Distance traveled by the lower seeded team in km.
 
 BotScore - The score of the lower seeded team in the first round game.
 
