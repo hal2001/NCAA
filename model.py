@@ -4,7 +4,7 @@ Make a model to predict upsets
 import numpy as np
 import pandas as pd
 from sklearn import linear_model as lm
-from sklearn.metrics import r2_score
+from sklearn.preprocessing import normalize
 
 def make_model(col_labels = None):
     """make and run model"""
@@ -30,13 +30,17 @@ def make_model(col_labels = None):
     predictors = data[col_labels]
 
     logistic = lm.LogisticRegression()
-    logistic.fit(predictors.as_matrix(), results.as_matrix())
 
-    print(logistic.coef_)
-    print(logistic.intercept_)
+    x = normalize(predictors.as_matrix())
+    y = results.as_matrix()
+    logistic.fit(x, y)
 
-    preds = logistic.predict(predictors)
-    preds_probas = logistic.predict_proba(predictors)
+    for i in range(len(logistic.coef_[0])):
+        print(col_labels[i] + ": " + str(logistic.coef_[0][i]))
+    print("intercept: " + str(logistic.intercept_[0]))
+
+    preds = logistic.predict(x)
+    preds_probas = logistic.predict_proba(x)
 
     # evaluate with precision, accuracy, recall
 
