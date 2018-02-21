@@ -25,15 +25,14 @@ def make_model(col_labels = None):
                 'BotDRTG',
                 'BotSOS'
                 ]
-    data = data[['year', 'Upset'] + col_labels]
     data[col_labels] = scale(data[col_labels])
-    print(data[col_labels])
 
     train = data.loc[data['year'] < 2007][col_labels]
     train_results = data.loc[data['year'] < 2007]['Upset'] # not a df
 
     test = data.loc[data['year'] == 2007][col_labels]
-    test_results = data.loc[data['year'] == 2007][['Upset']] # is a df
+    results_columns = ['SeedType', 'TopSeed', 'BotSeed', 'Upset']
+    test_results = data.loc[data['year'] == 2007][results_columns]
 
     # making the model #
     logistic = lm.LogisticRegression()
