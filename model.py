@@ -4,7 +4,7 @@ Make a model to predict upsets
 import numpy as np
 import pandas as pd
 from sklearn import linear_model as lm
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import scale
 
 def make_model(col_labels = None):
     """make and run model"""
@@ -26,27 +26,26 @@ def make_model(col_labels = None):
                 'BotSOS'
                 ]
     data = data[['year', 'Upset'] + col_labels]
-    data[col_labels] = normalize(data[col_labels], axis = 0)
-
-    test = data.loc[data['year'] == 2007][col_labels]
-    test_reuslts = data.loc[data['year'] == 2007]['Upset']
+    data[col_labels] = scale(data[col_labels])
+    print(data[col_labels])
 
     train = data.loc[data['year'] < 2007][col_labels]
-    train_results = data.loc[data['year'] < 2007]['Upset']
+    train_results = data.loc[data['year'] < 2007]['Upset'] # not a df
 
+    test = data.loc[data['year'] == 2007][col_labels]
+    test_results = data.loc[data['year'] == 2007][['Upset']] # is a df
+
+    # making the model #
     logistic = lm.LogisticRegression()
-    logistic.fit(test.as_matrix(), test_results.as_matrix())
+    logistic.fit(train.as_matrix(), train_results.as_matrix())
 
-    """
-    for i in range(len(logistic.coef_[0])):
-        print(col_labels[i] + ": " + str(logistic.coef_[0][i]))
-    print("intercept: " + str(logistic.intercept_[0]))
+    predictions = logistic.predict_proba(test.as_matrix())
+    proba = []
+    for i in range(len(predictions)):
+        proba.append(predictions[i][1]) # second column is upset percentage
 
-    preds = logistic.predict(x)
-    preds_probas = logistic.predict_proba(x)
-    """
+    test_results['UpsetProba'] = proba
+    test_results = test_results.sort('UpsetProba', ascending = 0)
 
-    # evaluate with precision, accuracy, recall
-
-    return -1
+    print(test_results)
 
