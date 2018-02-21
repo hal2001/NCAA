@@ -27,12 +27,12 @@ def make_model(col_labels = None):
                 ]
     data[col_labels] = scale(data[col_labels])
 
-    train = data.loc[data['year'] < 2007][col_labels]
-    train_results = data.loc[data['year'] < 2007]['Upset'] # not a df
+    train = data.loc[data['year'] < 2017][col_labels]
+    train_results = data.loc[data['year'] < 2017]['Upset'] # not a df
 
-    test = data.loc[data['year'] == 2007][col_labels]
+    test = data.loc[data['year'] == 2017][col_labels]
     results_columns = ['SeedType', 'TopSeed', 'BotSeed', 'Upset']
-    test_results = data.loc[data['year'] == 2007][results_columns]
+    test_results = data.loc[data['year'] == 2017][results_columns]
 
     # making the model #
     logistic = lm.LogisticRegression()
