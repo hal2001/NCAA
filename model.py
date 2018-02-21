@@ -9,9 +9,7 @@ from sklearn.preprocessing import normalize
 def make_model(col_labels = None):
     """make and run model"""
 
-    data = pd.read_csv("NCAA2001_2017.csv")
-
-    results = data['Upset']
+    data = pd.read_csv('NCAA2001_2017.csv')
 
     # data to pull from the data frame
     if col_labels is None:
@@ -27,20 +25,26 @@ def make_model(col_labels = None):
                 'BotDRTG',
                 'BotSOS'
                 ]
-    predictors = data[col_labels]
+    data = data[['year', 'Upset'] + col_labels]
+    data[col_labels] = normalize(data[col_labels], axis = 0)
+
+    test = data.loc[data['year'] == 2007][col_labels]
+    test_reuslts = data.loc[data['year'] == 2007]['Upset']
+
+    train = data.loc[data['year'] < 2007][col_labels]
+    train_results = data.loc[data['year'] < 2007]['Upset']
 
     logistic = lm.LogisticRegression()
+    logistic.fit(test.as_matrix(), test_results.as_matrix())
 
-    x = normalize(predictors.as_matrix())
-    y = results.as_matrix()
-    logistic.fit(x, y)
-
+    """
     for i in range(len(logistic.coef_[0])):
         print(col_labels[i] + ": " + str(logistic.coef_[0][i]))
     print("intercept: " + str(logistic.intercept_[0]))
 
     preds = logistic.predict(x)
     preds_probas = logistic.predict_proba(x)
+    """
 
     # evaluate with precision, accuracy, recall
 
