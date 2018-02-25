@@ -4,9 +4,12 @@ Make a model to predict upsets
 import numpy as np
 import pandas as pd
 from sklearn import linear_model as lm
+from sklearn.ensemble import RandomForestClassifier as rf
+from sklearn.ensemble import GradientBoostingClassifier as gbc
+from sklearn.svm import SVC as svc
 from sklearn.preprocessing import scale, OneHotEncoder
 
-def make_model(col_labels = None):
+def make_model(col_labels = None, year = 2017, model_type = None):
     """make and run model"""
 
     data = pd.read_csv('NCAA2001_2017.csv')
@@ -43,12 +46,12 @@ def make_model(col_labels = None):
                 'SevenTen', 'EightNine'],
             [1, 2, 3, 4, 5, 6, 7, 8])
 
-    train = data.loc[data['year'] < 2017][col_labels]
-    train_results = data.loc[data['year'] < 2017]['Upset'] # not a df
+    train = data.loc[data['year'] != year][col_labels]
+    train_results = data.loc[data['year'] != year]['Upset'] # not a df
 
-    test = data.loc[data['year'] == 2017][col_labels]
+    test = data.loc[data['year'] == year][col_labels]
     results_columns = ['SeedType', 'TopSeed', 'BotSeed', 'Upset']
-    test_results = data.loc[data['year'] == 2017][results_columns]
+    test_results = data.loc[data['year'] == year][results_columns]
 
     # have to one-hot the seeding type if that's in there
     if 'SeedType' in col_labels:
@@ -59,11 +62,18 @@ def make_model(col_labels = None):
         train = train.as_matrix()
         test = test.as_matrix()
 
-    # making the model #
-    logistic = lm.LogisticRegression()
-    logistic.fit(train, train_results.as_matrix())
+    # making the model
+    if model_type == "forest":
+        model = rf()
+    elif model_type == "gbc":
+        model = gbc()
+    elif model_type == "svc":
+        model = svc(probability = True)
+    else:
+        model = lm.LogisticRegression()
+    model.fit(train, train_results.as_matrix())
 
-    predictions = logistic.predict_proba(test)
+    predictions = model.predict_proba(test)
     proba = []
     for i in range(len(predictions)):
         proba.append(predictions[i][1]) # second column is upset percentage
