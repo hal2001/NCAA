@@ -13,6 +13,9 @@ def make_model(col_labels = None, year = 2017, model_type = None):
     """make and run model"""
 
     data = pd.read_csv('NCAA2001_2017.csv')
+    data_2018 = pd.read_csv('NCAA2018.csv')
+    data_2018['year'] = 2018
+    data = data.append(data_2018)
 
     # data to pull from the data frame
     if col_labels is None:
@@ -46,8 +49,10 @@ def make_model(col_labels = None, year = 2017, model_type = None):
                 'SevenTen', 'EightNine'],
             [1, 2, 3, 4, 5, 6, 7, 8])
 
-    train = data.loc[data['year'] != year][col_labels]
-    train_results = data.loc[data['year'] != year]['Upset'] # not a df
+    train = data.loc[(data['year'] != year) & \
+            (data['year'] != 2018)][col_labels]
+    train_results = data.loc[(data['year'] != year) & \
+            (data['year'] != 2018)]['Upset'] # not a df
 
     test = data.loc[data['year'] == year][col_labels]
     results_columns = ['SeedType', 'TopSeed', 'BotSeed', 'Upset']
