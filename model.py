@@ -9,13 +9,14 @@ from sklearn.ensemble import GradientBoostingClassifier as gbc
 from sklearn.svm import SVC as svc
 from sklearn.preprocessing import scale, OneHotEncoder
 
-def make_model(col_labels = None, year = 2017, model_type = None):
+
+def make_model(col_labels=None, year=2017, model_type=None):
     """make and run model"""
 
-    data = pd.read_csv('NCAA2001_2017.csv')
+    data_2001_2017 = pd.read_csv('NCAA2001_2017.csv')
     data_2018 = pd.read_csv('NCAA2018.csv')
     data_2018['year'] = 2018
-    data = data.append(data_2018)
+    data = data_2001_2017.append(data_2018)
 
     # data to pull from the data frame
     if col_labels is None:
@@ -84,7 +85,10 @@ def make_model(col_labels = None, year = 2017, model_type = None):
         proba.append(predictions[i][1]) # second column is upset percentage
 
     test_results['UpsetProba'] = proba
-    test_results = test_results.sort('UpsetProba', ascending = 0)
+    test_results = test_results.sort_values('UpsetProba', ascending = 0)
 
     print(test_results)
 
+
+if __name__ == '__main__':
+    make_model()
